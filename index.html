@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PeakHD — Max Print Quality PDF</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#05050a;--s1:#0a0a12;--s2:#10101c;--s3:#16162a;
+  --border:#1c1c30;--border2:#252540;
+  --a1:#b8ff57;--a2:#57c8ff;
+  --text:#e8eaf6;--muted:#4a4a70;--dim:#2a2a48;
+  --font:'Syne',sans-serif;--mono:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
+nav{
+  width:100%;padding:.9rem 1.6rem;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);flex-shrink:0;
+  background:rgba(5,5,10,.96);backdrop-filter:blur(16px);position:sticky;top:0;z-index:50
+}
+.logo{display:flex;align-items:baseline;gap:.5rem}
+.logo-mark{font-size:.95rem;font-weight:800;letter-spacing:-.04em;color:var(--a1)}
+.logo-mark em{color:var(--text);font-style:normal}
+.logo-sub{font-family:var(--mono);font-size:.58rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:.6rem}
+.badge{font-family:var(--mono);font-size:.55rem;letter-spacing:.07em;text-transform:uppercase;padding:.22rem .65rem;border-radius:3px;border:1px solid;white-space:nowrap}
+.badge-green{background:rgba(184,255,87,.06);border-color:rgba(184,255,87,.2);color:var(--a1)}
+
+/* ── Upload screen ─────────────────────────────────────────────────────── */
+#upload-screen{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:3rem 1.5rem;width:100%;max-width:640px;margin:0 auto;text-align:center
+}
+.hero{font-size:clamp(2rem,6vw,3.4rem);font-weight:800;letter-spacing:-.05em;line-height:1.04;margin-bottom:.9rem}
+.hero .accent{color:var(--a1)}
+.hero-sub{color:var(--muted);font-size:.8rem;line-height:1.75;max-width:480px;margin-bottom:2.2rem}
+
+/* ── Dropzone ──────────────────────────────────────────────────────────── */
+.dropzone{
+  width:100%;border:1.5px dashed var(--border2);border-radius:14px;
+  padding:3rem 2rem;cursor:pointer;transition:all .22s;background:var(--s1);
+  position:relative;overflow:hidden;margin-bottom:1.2rem
+}
+.dropzone::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(184,255,87,.025),transparent)
+}
+.dropzone:hover,.dropzone.over{
+  border-color:var(--a1);background:rgba(184,255,87,.02);
+  box-shadow:0 0 50px rgba(184,255,87,.04)
+}
+.dz-ico{
+  width:48px;height:48px;border-radius:10px;background:var(--s2);border:1px solid var(--border);
+  margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;transition:all .22s
+}
+.dropzone:hover .dz-ico,.dropzone.over .dz-ico{border-color:var(--a1);box-shadow:0 0 18px rgba(184,255,87,.15)}
+.dz-ico svg{width:22px;height:22px;stroke:var(--a1);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.dz-title{font-weight:700;font-size:.92rem;margin-bottom:.3rem}
+.dz-hint{color:var(--muted);font-size:.7rem}
+#file-input{display:none}
+
+/* ── Processing screen ─────────────────────────────────────────────────── */
+#proc-screen{
+  display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;
+  padding:3rem 1.5rem;text-align:center;width:100%;max-width:420px;margin:0 auto
+}
+.spinner{
+  width:52px;height:52px;border-radius:50%;border:2px solid var(--border2);
+  border-top-color:var(--a1);border-right-color:var(--a2);
+  animation:spin .9s linear infinite;margin-bottom:1.6rem
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-title{font-weight:700;font-size:1rem;margin-bottom:.25rem}
+.proc-sub{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:1.4rem;min-height:1.1em}
+.pbar-wrap{width:260px;height:2px;background:var(--s3);border-radius:2px;overflow:hidden; position:relative;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));width:50%; animation: pulse 1.5s infinite alternate;}
+@keyframes pulse { 0% {width: 10%;} 100% {width: 100%;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <span class="logo-mark">PEAK<em>HD</em></span>
+    <span class="logo-sub">Pro Python Engine</span>
+  </div>
+  <div class="nav-right">
+    <span class="badge badge-green">Vector Text + HD Images</span>
+  </div>
+</nav>
+
+<div id="upload-screen">
+  <h1 class="hero">Print-perfect.<br/><span class="accent">Zero compromise.</span></h1>
+  <p class="hero-sub">Powered by Python OpenCV. Upgrades embedded medical images to HD using 3-Band USM while keeping your text as perfectly sharp, searchable vectors.</p>
+
+  <div class="dropzone" id="dropzone">
+    <input type="file" id="file-input" accept=".pdf"/>
+    <div class="dz-ico">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+    </div>
+    <div class="dz-title">Drop PDF here or click to browse</div>
+    <div class="dz-hint">No page limits · Backend Processing</div>
+  </div>
+</div>
+
+<div id="proc-screen">
+  <div class="spinner"></div>
+  <div class="proc-title" id="proc-title">Uploading...</div>
+  <div class="proc-sub" id="proc-sub">Please wait while the server enhances your images.</div>
+  <div class="pbar-wrap"><div class="pbar-fill" id="pbar"></div></div>
+</div>
+
+<script>
+'use strict';
+
+const $  = id => document.getElementById(id);
+const show = (el) => el.style.display = 'flex';
+const hide = (el) => el.style.display = 'none';
+const st = (id, v) => $(id).textContent = v;
+
+// ── Dropzone events ────────────────────────────────────────────────────
+$('dropzone').addEventListener('click',    () => $('file-input').click());
+$('dropzone').addEventListener('dragover', e => { e.preventDefault(); $('dropzone').classList.add('over'); });
+$('dropzone').addEventListener('dragleave',  () => $('dropzone').classList.remove('over'));
+$('dropzone').addEventListener('drop', e => {
+  e.preventDefault(); $('dropzone').classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if(f?.type === 'application/pdf') start(f);
+});
+$('file-input').addEventListener('change', () => {
+  if($('file-input').files[0]) start($('file-input').files[0]);
+});
+
+// ── Connect to Python Backend ──────────────────────────────────────────
+async function start(file){
+  hide($('upload-screen')); 
+  show($('proc-screen'));
+  st('proc-title', 'Processing with Python...');
+  st('proc-sub', 'Extracting and upgrading images in HD. This may take a minute depending on file size.');
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch('/process', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (response.ok) {
+      st('proc-title', 'Success! Downloading...');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.name.replace(/\.pdf$/i, '') + '_PeakHD_Pro.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      
+      // Reset
+      hide($('proc-screen')); 
+      show($('upload-screen'));
+      $('file-input').value = '';
+    } else {
+      alert("Server error. The PDF might be too large or corrupted.");
+      hide($('proc-screen')); 
+      show($('upload-screen'));
+    }
+  } catch (error) {
+    alert("Connection error. Ensure the server is running.");
+    hide($('proc-screen')); 
+    show($('upload-screen'));
+  }
+}
+</script>
+</body>
+</html>
